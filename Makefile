@@ -14,7 +14,7 @@
 ##   See the License for the specific language governing permissions and
 ##   limitations under the License.
 ##
-USR ?= app
+IID ?= fogfish
 APP ?= mysql
 VSN ?= latest
 
@@ -22,14 +22,29 @@ PORT ?= 3306
 SOCK ?= 9999
 KCOS  = $(shell echo $$((${SOCK}-1)))
 
-FLAGS = \
+##
+## image build flags
+DFLAGS = 
+
+##
+## image run flags
+IFLAGS = \
 	-p ${PORT}:3306 \
 	-p ${SOCK}:9999 \
 	-p ${KCOS}:9998
 
-all:
-	docker build -t ${USR}/${APP}:${VSN} .
+##
+## build container
+docker: Dockerfile
+	docker build ${DFLAGS} -t ${IID}/${APP}:${VSN} -f $< . 
 
+##
+## 
 run:
-	docker run -it ${FLAGS} ${USR}/${APP}:${VSN}
+	docker run -it ${IFLAGS} ${IID}/${APP}:${VSN}
+
+##
+##
+debug:
+	docker run -it ${IFLAGS} ${IID}/${APP}:${VSN} bash
 
